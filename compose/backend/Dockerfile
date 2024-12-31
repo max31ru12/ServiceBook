@@ -2,8 +2,8 @@ FROM python:3.12-slim
 
 RUN apt-get update -qy
 
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
 WORKDIR /backend
 
@@ -14,6 +14,6 @@ RUN pip install -r requirements-dev.txt
 COPY ./alembic ./
 COPY alembic.ini ./
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--reload"]
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--reload", "--log-level", "debug"]
 
 EXPOSE 8000

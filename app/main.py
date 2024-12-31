@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
+from app.api.v1.auth import auth_router, register_router
 from app.config import DEV_MODE
 
 
@@ -15,8 +16,11 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     lifespan=lifespan,
-    default_response_class=ORJSONResponse,
+    # default_response_class=ORJSONResponse,
 )
+
+app.include_router(auth_router, prefix="/auth/jwt", tags=["auth"])
+app.include_router(register_router, prefix="/auth", tags=["auth"])
 
 
 @app.get("/")

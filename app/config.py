@@ -6,6 +6,7 @@ load_dotenv()
 
 DEV_MODE: bool = getenv("DEV_MODE", "true") == "true"
 
+# DB settings
 DB_HOST: str = getenv("DB_HOST", default="postgres")
 DB_PORT: str = getenv("DB_PORT", default="5432")
 DB_PASSWORD: str = getenv("DB_PASSWORD", default="test")
@@ -16,6 +17,7 @@ DB_URL: str = (
     f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
+# Alembic constraint naming convention
 CONVENTION = {
     "ix": "ix_%(column_0_label)s",
     "uq": "uq_%(table_name)s_%(column_0_name)s",
@@ -23,3 +25,7 @@ CONVENTION = {
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
     "pk": "pk_%(table_name)s",
 }
+
+# JWT settings
+JWT_LIFETIME = 3600
+SECRET = "SECRET"

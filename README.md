@@ -45,3 +45,8 @@ docker compose -f ./local.yml run --rm backend alembic upgrade head
 ## Links
 
 - [Unique Constraint Naming conventions](https://docs.sqlalchemy.org/en/20/core/constraints.html#constraint-naming-conventions)
+
+
+## Конфигурация FastAPI:
+
+<img alt="img.png" src="img.png"/>

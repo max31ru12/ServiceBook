@@ -1,4 +1,6 @@
-__all__ = ["User"]
+__all__ = (
+    "User",
+)
 
 from app.models.user import User
 
