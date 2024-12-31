@@ -11,7 +11,6 @@ COPY requirements-dev.txt ./
 
 RUN pip install -r requirements-dev.txt
 
-COPY ./app ./app
 COPY ./alembic ./
 COPY alembic.ini ./
 
