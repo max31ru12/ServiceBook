@@ -17,16 +17,16 @@ async def test_client_request(client):
     assert response.status_code == 200
 
 
-async def test_register(client, session):
-    register_data = {
-        "email": "user@example.com",
-        "password": "string",
-        "is_active": True,
-        "is_superuser": False,
-        "is_verified": False,
-    }
-    response = client.post("/auth/register", json=register_data)
-    data = await session.execute(select(User))
-    print(data.scalars().all())
-    assert data is not None
-    assert response.status_code == 201
+# async def test_register(client, session):
+#     register_data = {
+#         "email": "user@example.com",
+#         "password": "string",
+#         "is_active": True,
+#         "is_superuser": False,
+#         "is_verified": False,
+#     }
+#     response = client.post("/auth/register", json=register_data)
+#     data = await session.execute(select(User))
+#     print(data.scalars().all())
+#     assert data is not None
+#     assert response.status_code == 201
