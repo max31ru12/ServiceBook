@@ -111,4 +111,5 @@ jobs:
 
       - name: Run migrations
         run: |
+          echo "DB_HOST=postgres" > .env
           docker compose -f local.yml run --rm backend alembic upgrade head
