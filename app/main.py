@@ -1,9 +1,16 @@
 from contextlib import asynccontextmanager
 
+import uvicorn
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 
-from app.api.v1.auth import auth_router, register_router
+from app.auth.router import (
+    auth_router,
+    register_router,
+    get_verify_router,
+    get_reset_password_router,
+    get_users_router
+)
 from app.config import DEV_MODE
 
 
@@ -16,11 +23,14 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     lifespan=lifespan,
-    # default_response_class=ORJSONResponse,
+    default_response_class=ORJSONResponse,
 )
 
 app.include_router(auth_router, prefix="/auth/jwt", tags=["auth"])
 app.include_router(register_router, prefix="/auth", tags=["auth"])
+app.include_router(get_verify_router, prefix="/auth", tags=["auth"])
+app.include_router(get_reset_password_router, prefix="/auth", tags=["auth"])
+app.include_router(get_users_router, prefix="/users", tags=["users"])
 
 
 @app.get("/")
@@ -31,3 +41,7 @@ async def root():
 @app.get("/hello/{name}")
 async def say_hello(name: str):
     return {"message": f"Hello {name} "}
+
+
+if __name__ == '__main__':
+    uvicorn.run("main:app", host='127.0.0.1', port=8000, reload=True)

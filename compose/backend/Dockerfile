@@ -1,6 +1,7 @@
 FROM python:3.12-slim
 
-RUN apt-get update -qy
+RUN apt-get update -qy && apt-get install -y --no-install-recommends gcc libpq-dev && \
+    rm -rf /var/lib/apt/lists/*
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

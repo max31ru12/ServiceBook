@@ -4,14 +4,22 @@ from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin
 from fastapi_users.authentication import AuthenticationBackend, BearerTransport, JWTStrategy
 
-from app.config import SECRET, JWT_LIFETIME
-from app.models import User
+from app.config import settings
+from app.auth.models import User
 
 bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
 
 
 def get_jwt_strategy() -> JWTStrategy:
-    return JWTStrategy(secret=SECRET, lifetime_seconds=JWT_LIFETIME)
+    private_key = 'Private'
+    public_key = 'Public'
+
+    return JWTStrategy(
+        secret=private_key,  # Используется для подписывания токенов
+        public_key=public_key,  # Используется для проверки токенов
+        lifetime_seconds=settings.LIFETIME,
+        algorithm="HS256"
+    )
 
 
 auth_backend = AuthenticationBackend(
@@ -22,8 +30,8 @@ auth_backend = AuthenticationBackend(
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
-    reset_password_token_secret = SECRET
-    verification_token_secret = SECRET
+    reset_password_token_secret = 'Public'
+    verification_token_secret = 'Private'
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")
