@@ -25,9 +25,6 @@ session_factory: async_sessionmaker[AsyncSession] = async_sessionmaker(
 )
 
 
-# геттер нужен для использования в FastAPI зависимостях, yield используется для того,
-# чтобы после завершения работы с сессией пошло выполнение дальше yield и вызвался метод
-# __aexit__ асинхронного контекстного менеджера
 async def session_getter() -> AsyncGenerator[AsyncSession, None]:
     async with session_factory() as session:
         yield session
@@ -35,3 +32,7 @@ async def session_getter() -> AsyncGenerator[AsyncSession, None]:
 
 class Base(DeclarativeBase):
     metadata = MetaData(naming_convention=CONVENTION)
+
+    def __repr__(self):
+        instance_id = f" id={self.id}" if hasattr(self, "id") else ""
+        return f"{self.__class__.__name__}{instance_id}"

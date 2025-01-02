@@ -10,7 +10,7 @@ from sqlalchemy.ext.asyncio import (
 )
 
 from app.main import app
-from app.models import Base
+from app.setup_db import Base
 
 pytest_plugins = ("anyio",)
 
@@ -39,7 +39,7 @@ def async_session_maker(test_engine) -> async_sessionmaker[AsyncSession]:
 
 
 @pytest.fixture(scope="function")
-async def session(async_session_maker) -> Iterator[AsyncSession]:
+async def session(async_session_maker) -> AsyncSession:
     async with async_session_maker() as session:
         yield session
         # Clear data after single test
@@ -53,3 +53,4 @@ async def setup_database(test_engine) -> AsyncIterator[None]:
     yield
     async with test_engine.begin() as conn:
         await conn.run_sync(Base.metadata.drop_all)
+    await test_engine.dispose()

@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     PUBLIC_KEY: str = "public"
     PRIVATE_KEY: str = "private"
 
-    class Config:
+    class ConfigDict:
         env = ".env"
 
 
