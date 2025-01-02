@@ -9,10 +9,10 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase
 
-from app.config import CONVENTION, DEV_MODE, settings
+from app.config import CONVENTION, DB_URL, DEV_MODE
 
 async_engine: AsyncEngine = create_async_engine(
-    url=settings.DB_URL,
+    url=DB_URL,
     echo=DEV_MODE,
     pool_size=10,
     max_overflow=20,

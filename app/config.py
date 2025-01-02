@@ -30,10 +30,6 @@ class Settings(BaseSettings):
     DB_USER: str = "test"
     DB_NAME: str = "test"
 
-    DB_URL: str = (
-        f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    )
-
     PUBLIC_KEY: str = "public"
     PRIVATE_KEY: str = "private"
 
@@ -42,3 +38,5 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+DB_URL: str = f"postgresql+asyncpg://{settings.DB_USER}:{settings.DB_PASSWORD}@{settings.DB_HOST}:{settings.DB_PORT}/{settings.DB_NAME}"
