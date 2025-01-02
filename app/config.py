@@ -24,7 +24,7 @@ class Settings(BaseSettings):
     LIFETIME: int = 60 * 60 * 24
 
     # DB settings
-    DB_HOST: str = "localhost"
+    DB_HOST: str = "postgres"
     DB_PORT: str = "5432"
     DB_PASSWORD: str = "test"
     DB_USER: str = "test"
