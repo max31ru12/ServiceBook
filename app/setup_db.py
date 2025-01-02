@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase
 
-from app.config import DEV_MODE, CONVENTION, settings
+from app.config import CONVENTION, DEV_MODE, settings
 
 async_engine: AsyncEngine = create_async_engine(
     url=settings.DB_URL,

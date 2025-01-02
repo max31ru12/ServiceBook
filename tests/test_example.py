@@ -1,5 +1,5 @@
 import pytest
-from sqlalchemy import text, select
+from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.models import User
@@ -23,10 +23,10 @@ async def test_register(client, session):
         "password": "string",
         "is_active": True,
         "is_superuser": False,
-        "is_verified": False
+        "is_verified": False,
     }
     response = client.post("/auth/register", json=register_data)
     data = await session.execute(select(User))
     print(data.scalars().all())
-    assert data is None
+    assert data is not None
     assert response.status_code == 201

@@ -1,4 +1,4 @@
-from typing import AsyncIterator, Iterator
+from typing import AsyncIterator
 
 import pytest
 from fastapi.testclient import TestClient
