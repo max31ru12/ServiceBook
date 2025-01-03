@@ -26,7 +26,7 @@ app = FastAPI(
     default_response_class=ORJSONResponse,
 )
 
-app.include_router(auth_router, prefix="/auth/jwt", tags=["auth"])
+app.include_router(auth_router, prefix="/auth", tags=["auth"])
 app.include_router(register_router, prefix="/auth", tags=["auth"])
 app.include_router(get_verify_router, prefix="/auth", tags=["auth"])
 app.include_router(get_reset_password_router, prefix="/auth", tags=["auth"])

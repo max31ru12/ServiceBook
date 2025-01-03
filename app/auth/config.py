@@ -2,40 +2,35 @@ from typing import Optional
 
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin
-from fastapi_users.authentication import (
-    AuthenticationBackend,
-    BearerTransport,
-    JWTStrategy,
-)
+from fastapi_users.authentication import AuthenticationBackend, BearerTransport
+from fastapi_users.authentication.strategy import AccessTokenDatabase, DatabaseStrategy
 
-from app.auth.models import User
+from app.auth.models import AccessToken, User
 from app.config import settings
 
-bearer_transport = BearerTransport(tokenUrl="auth/jwt/login")
+bearer_transport = BearerTransport(tokenUrl="auth/login")
 
 
-def get_jwt_strategy() -> JWTStrategy:
-    private_key = "Private"
-    public_key = "Public"
-
-    return JWTStrategy(
-        secret=private_key,  # Используется для подписывания токенов
-        public_key=public_key,  # Используется для проверки токенов
-        lifetime_seconds=settings.LIFETIME,
-        algorithm="HS256",
+def get_database_strategy(
+    access_token_db: AccessTokenDatabase[AccessToken] = Depends(
+        AccessToken.get_access_token_db
+    ),
+) -> DatabaseStrategy:
+    return DatabaseStrategy(
+        access_token_db, lifetime_seconds=settings.ACCESS_TOKEN_LIFETIME
     )
 
 
 auth_backend = AuthenticationBackend(
-    name="jwt",
+    name="token",
     transport=bearer_transport,
-    get_strategy=get_jwt_strategy,
+    get_strategy=get_database_strategy,
 )
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
-    reset_password_token_secret = "Public"
-    verification_token_secret = "Private"
+    reset_password_token_secret = settings.RESET_PASSWORD_TOKEN_SECRET
+    verification_token_secret = settings.VERIFICATION_TOKEN_SECRET
 
     async def on_after_register(self, user: User, request: Optional[Request] = None):
         print(f"User {user.id} has registered.")

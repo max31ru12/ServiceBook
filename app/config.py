@@ -21,7 +21,7 @@ CONVENTION = {
 
 
 class Settings(BaseSettings):
-    LIFETIME: int = 60 * 60 * 24
+    ACCESS_TOKEN_LIFETIME: int = 60 * 60 * 24
 
     # DB settings
     DB_HOST: str = "localhost"
@@ -30,8 +30,8 @@ class Settings(BaseSettings):
     DB_USER: str = "test"
     DB_NAME: str = "test"
 
-    PUBLIC_KEY: str = "public"
-    PRIVATE_KEY: str = "private"
+    RESET_PASSWORD_TOKEN_SECRET: str = "reset_password_token"
+    VERIFICATION_TOKEN_SECRET: str = "verification_token"
 
     class ConfigDict:
         env = BASE_DIR / ".env"
