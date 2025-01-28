@@ -2,7 +2,7 @@ import pytest
 from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth.models import User
+from app.users.models import User
 
 pytestmark = pytest.mark.anyio
 
@@ -25,7 +25,7 @@ async def test_client_request(client):
 #         "is_superuser": False,
 #         "is_verified": False,
 #     }
-#     response = client.post("/auth/register", json=register_data)
+#     response = client.post("/users/register", json=register_data)
 #     data = await session.execute(select(User))
 #     print(data.scalars().all())
 #     assert data is not None
