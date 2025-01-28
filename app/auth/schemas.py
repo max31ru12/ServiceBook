@@ -1,13 +1,10 @@
-from fastapi_users import schemas
+from pydantic import BaseModel
 
 
-class UserRead(schemas.BaseUser[int]):
-    pass
+class LoginForm(BaseModel):
+    username: str
+    password: str
 
 
-class UserCreate(schemas.BaseUserCreate):
-    pass
-
-
-class UserUpdate(schemas.BaseUserUpdate):
-    pass
+class JWTTokenResponse(BaseModel):
+    token: str

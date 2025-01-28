@@ -5,13 +5,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 
-from app.auth.router import (
-    auth_router,
-    get_reset_password_router,
-    get_users_router,
-    get_verify_router,
-    register_router,
-)
 from app.config import DEV_MODE
 
 
@@ -43,12 +36,6 @@ app.add_middleware(
     allow_methods=["*"],  # Разрешённые HTTP-методы (например, "GET", "POST")
     allow_headers=["*"],  # Разрешённые заголовки (например, "Content-Type")
 )
-
-app.include_router(auth_router, prefix="/auth", tags=["auth"])
-app.include_router(register_router, prefix="/auth", tags=["auth"])
-app.include_router(get_verify_router, prefix="/auth", tags=["auth"])
-app.include_router(get_reset_password_router, prefix="/auth", tags=["auth"])
-app.include_router(get_users_router, prefix="/users", tags=["users"])
 
 
 @app.get("/")
