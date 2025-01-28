@@ -2,6 +2,7 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 
 from app.auth.router import (
@@ -24,6 +25,23 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     lifespan=lifespan,
     default_response_class=ORJSONResponse,
+)
+
+# Разрешённые источники
+origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:8000",
+    "*",
+]
+
+# Настройка CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,  # Разрешённые источники
+    allow_credentials=True,  # Разрешить передачу cookies
+    allow_methods=["*"],  # Разрешённые HTTP-методы (например, "GET", "POST")
+    allow_headers=["*"],  # Разрешённые заголовки (например, "Content-Type")
 )
 
 app.include_router(auth_router, prefix="/auth", tags=["auth"])
