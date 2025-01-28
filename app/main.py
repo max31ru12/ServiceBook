@@ -5,7 +5,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 
-from app.config import DEV_MODE
+from app.api.v1.users import users_router
+from app.core.config import DEV_MODE
 
 
 @asynccontextmanager
@@ -19,6 +20,8 @@ app = FastAPI(
     lifespan=lifespan,
     default_response_class=ORJSONResponse,
 )
+
+app.include_router(users_router, prefix="/api")
 
 # Разрешённые источники
 origins = [

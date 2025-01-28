@@ -1,7 +1,7 @@
 from sqlalchemy import text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.setup_db import Base
+from app.core.setup_db import Base
 
 
 class User(Base):
