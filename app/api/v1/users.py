@@ -1,18 +1,44 @@
-from fastapi import APIRouter, Depends
-from sqlalchemy import select
+from fastapi import APIRouter, Depends, HTTPException
 
-from app.core.setup_db import session_factory, session_getter
+from app.core.auth import verify_password
+from app.core.setup_db import session_getter
 from app.domains.users.models import User
-from app.domains.users.schemas import LoginForm
+from app.domains.users.schemas import CreateUser, LoginForm, UserData
+from app.domains.users.service import UserService
 
-users_router = APIRouter(prefix="/users")
+user_router = APIRouter(prefix="/users")
+auth_router = APIRouter(prefix="/auth")
 
 
-@users_router.post("/login")
+@auth_router.post("/register")
+async def register_user(user_data: CreateUser, session=Depends(session_getter)):
+
+    if (
+        await UserService(session).get_user_by_kwargs(email=user_data.email)
+    ) is not None:
+        raise HTTPException(
+            status_code=409, detail="User with provided email is already exists"
+        )
+
+    if (
+        await UserService(session).get_user_by_kwargs(username=user_data.username)
+    ) is not None:
+        raise HTTPException(
+            status_code=409, detail="User with provided username is already exists"
+        )
+
+    new_user = await UserService(session).create_user(user_data)
+
+    return new_user
+
+
+@auth_router.post("/login")
 async def login(data: LoginForm, session=Depends(session_getter)):
-    async with session_factory() as session:
-        stmt = select(User).where(User.username == data.username)
-        result = await session.execute(stmt)
-        user = result.scalar_one_or_none()
 
-    return {"username": user.username}
+    user = await UserService(session).get_user_by_kwargs(username=data.username)
+    if user is None:
+        raise HTTPException(status_code=404, detail="There is no such user")
+
+    if not verify_password(data.password, user.password):
+        raise HTTPException(status_code=401, detail="Wrong credentials")
+    return user
