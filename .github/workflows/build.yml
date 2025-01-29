@@ -60,7 +60,7 @@ jobs:
 
       - name: Run tests
         run: |
-          pytest
+          poetry run pytest
 
   migrations:
     runs-on: ubuntu-latest
