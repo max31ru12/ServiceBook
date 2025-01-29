@@ -17,7 +17,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo curl -sSL https://install.python-poetry.org | python3 -
-          ENV PATH="/root/.local/bin:$PATH"
+          sudo apt update
           poetry install --with dev
       - name: Lint with flake8
         run: |
