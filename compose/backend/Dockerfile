@@ -1,20 +1,25 @@
-FROM python:3.12-slim
+FROM python:3.13-slim
 
-RUN apt-get update -qy && apt-get install -y --no-install-recommends gcc libpq-dev && \
-    rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y curl && \
+    curl -sSL https://install.python-poetry.org | python3 - && \
+    apt-get remove -y curl && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
+
+RUN curl -sSL https://install.python-poetry.org | python3 -
+ENV PATH="/root/.local/bin:$PATH"
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /backend
+WORKDIR /app
 
-COPY requirements-dev.txt ./
+COPY pyproject.toml poetry.lock ./
 
-RUN pip install -r requirements-dev.txt
+RUN poetry install --no-root
 
 COPY ./alembic ./
 COPY alembic.ini ./
 
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--reload", "--log-level", "debug"]
+CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--reload", "--log-level", "debug"]
 
 EXPOSE 8000

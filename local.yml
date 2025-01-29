@@ -38,7 +38,7 @@ services:
       - "8000:8000"
     restart: unless-stopped
     volumes:
-      - ./app/:/backend/app/
+      - ./app/:/app/app/
       - ./alembic/:/backend/alembic
     networks:
       - default
