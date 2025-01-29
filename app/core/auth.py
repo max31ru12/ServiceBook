@@ -1,7 +1,10 @@
 from datetime import datetime, timedelta, timezone
 
+from fastapi import HTTPException
 from jose import jwt
 from passlib.context import CryptContext
+from starlette import status
+from starlette.requests import Request
 
 from app.core.config import settings
 
@@ -26,3 +29,12 @@ def create_access_token(data: dict) -> str:
         to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM
     )
     return encode_jwt
+
+
+def get_access_token(request: Request):
+    token = request.cookies.get("users_access_token")
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Token not found"
+        )
+    return token

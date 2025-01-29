@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class CreateUser(BaseModel):
@@ -6,22 +6,22 @@ class CreateUser(BaseModel):
     username: str
     password: str
 
+    model_config = {"from_attributes": True}
 
-class UpdateUser(CreateUser):
-    first_name: str
-    last_name: str
+
+class UserData(CreateUser):
+    first_name: str | None
+    last_name: str | None
     is_admin: bool
     is_super_user: bool
-
-
-class UserData(UpdateUser):
     id: int
 
 
 class LoginForm(BaseModel):
     username: str
-    password: str
+    password: str = Field(min_length=5, max_length=50)
 
 
 class JWTTokenResponse(BaseModel):
-    token: str
+    access_token: str
+    refresh_token: str | None
