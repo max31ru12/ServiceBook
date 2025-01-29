@@ -2,20 +2,21 @@ from datetime import datetime, timezone
 from typing import Annotated
 
 from fastapi import Depends, HTTPException
+from fastapi.security import APIKeyCookie
 from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 
-from app.core.auth import get_access_token
 from app.core.config import settings
 from app.core.setup_db import session_getter
 from app.domains.users.models import User
-from app.domains.users.schemas import UserData
 from app.domains.users.service import UserService
+
+cookie_scheme = APIKeyCookie(name="users_access_token", auto_error=True)
 
 
 async def get_current_user(
-    token: str = Depends(get_access_token),
+    token: str = Depends(cookie_scheme),
     session: AsyncSession = Depends(session_getter),
 ) -> User:
     try:

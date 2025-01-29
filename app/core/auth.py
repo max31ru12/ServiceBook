@@ -31,6 +31,7 @@ def create_access_token(data: dict) -> str:
     return encode_jwt
 
 
+# можно заменить APIKeyCookie
 def get_access_token(request: Request):
     token = request.cookies.get("users_access_token")
     if not token:

@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 
-from app.api.v1.users import auth_router
+from app.api.v1.auth import auth_router
 from app.core.config import DEV_MODE
 
 

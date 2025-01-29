@@ -5,11 +5,9 @@ from starlette.responses import Response
 from app.core.auth import create_access_token, verify_password
 from app.core.setup_db import session_getter
 from app.domains.users.dependencies import CurrentUser
-from app.domains.users.models import User
 from app.domains.users.schemas import CreateUser, JWTTokenResponse, LoginForm, UserData
 from app.domains.users.service import UserService
 
-user_router = APIRouter(prefix="/users")
 auth_router = APIRouter(prefix="/auth")
 
 
@@ -54,6 +52,7 @@ async def login(
     return JWTTokenResponse(access_token=access_token, refresh_token=None)
 
 
-@auth_router.post("/test")
-async def get_current_user(user: CurrentUser) -> UserData:
-    return UserData.from_orm(user)
+@auth_router.post("/logout")
+async def logout(response: Response, user: CurrentUser) -> str:
+    response.delete_cookie("users_access_token")
+    return "Successfully logged out"
