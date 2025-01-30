@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Depends, HTTPException
-from starlette.requests import Request
 from starlette.responses import Response
 
 from app.core.auth import create_access_token, verify_password
@@ -41,6 +40,7 @@ async def login(
 ) -> JWTTokenResponse:
 
     user = await UserService(session).get_user_by_kwargs(username=data.username)
+
     if user is None:
         raise HTTPException(status_code=404, detail="There is no such user")
 

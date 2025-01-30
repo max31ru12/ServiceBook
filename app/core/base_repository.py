@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
-from typing import Generic, TypeVar
+from typing import Generic, Sequence, TypeVar
+
+from sqlalchemy import delete, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class BaseRepository(ABC):
@@ -8,7 +11,7 @@ class BaseRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_by_id(self, model_id: int):
+    def get(self, model_id: int):
         raise NotImplementedError
 
     @abstractmethod
@@ -27,23 +30,42 @@ class BaseRepository(ABC):
 ModelType = TypeVar("ModelType")
 
 
-class BaseAsyncSQLAlchemyRepository(BaseRepository, ABC, Generic[ModelType]):
-    @abstractmethod
-    async def list(self) -> list[ModelType]:
-        raise NotImplementedError
+class BaseAsyncSQLAlchemyRepository(ABC, Generic[ModelType]):
 
-    @abstractmethod
+    model: ModelType = None
+
+    def __init__(self, session: AsyncSession):
+        self.session = session
+
+    async def list(self):
+        return (await self.session.execute(select(self.model))).scalars().all()
+
+    async def create(self, **kwargs) -> ModelType:
+        instance = self.model(**kwargs)
+        self.session.add(instance)
+        await self.session.commit()
+        return instance
+
+    async def remove(self, model_id: int):
+        return await self.session.execute(
+            delete(self.model).where(self.model.id == model_id)
+        )
+
     async def get_by_id(self, model_id: int) -> ModelType:
-        raise NotImplementedError
+        return (
+            await self.session.execute(select(self.model).filter_by(id=model_id))
+        ).scalar_one_or_none()
 
-    @abstractmethod
-    async def create(self) -> ModelType:
-        raise NotImplementedError
+    async def get_by_kwargs(self, **kwargs) -> Sequence[ModelType]:
+        return (
+            (await self.session.execute(select(self.model).filter_by(**kwargs)))
+            .scalars()
+            .all()
+        )
 
-    @abstractmethod
-    async def update(self, model_id: int) -> None:
-        raise NotImplementedError
-
-    @abstractmethod
-    async def remove(self, model_id: int) -> None:
-        raise NotImplementedError
+    async def get_first_by_kwargs(self, **kwargs) -> ModelType:
+        return (
+            (await self.session.execute(select(self.model).filter_by(**kwargs)))
+            .scalars()
+            .first()
+        )
