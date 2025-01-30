@@ -7,7 +7,7 @@ from app.domains.users.dependencies import CurrentUser
 from app.domains.users.schemas import CreateUser, JWTTokenResponse, LoginForm, UserData
 from app.domains.users.service import UserService
 
-auth_router = APIRouter(prefix="/auth")
+auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @auth_router.post("/register")
@@ -47,7 +47,7 @@ async def login(
     if not verify_password(data.password, user.password):
         raise HTTPException(status_code=401, detail="Wrong credentials")
 
-    access_token = create_access_token({"sub": data.username})
+    access_token = create_access_token({"sub": user.username})
     response.set_cookie(key="users_access_token", value=access_token, httponly=True)
     return JWTTokenResponse(access_token=access_token, refresh_token=None)
 
