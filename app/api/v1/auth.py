@@ -3,7 +3,7 @@ from starlette.responses import Response
 
 from app.core.auth import create_access_token, verify_password
 from app.core.setup_db import session_getter
-from app.domains.users.dependencies import CurrentUser
+from app.domains.users.dependencies import CurrentUserDep
 from app.domains.users.schemas import CreateUser, JWTTokenResponse, LoginForm, UserData
 from app.domains.users.service import UserService
 
@@ -53,6 +53,6 @@ async def login(
 
 
 @auth_router.post("/logout")
-async def logout(response: Response, user: CurrentUser) -> str:
+async def logout(response: Response, user: CurrentUserDep) -> str:
     response.delete_cookie("users_access_token")
     return "Successfully logged out"
