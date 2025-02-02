@@ -48,9 +48,9 @@ async def root():
     return {"message": f"Hello World DEV_MODE: {DEV_MODE}"}
 
 
-@app.get("/hello/{name}")
-async def say_hello(name: str):
-    return {"message": f"Hello {name} "}
+@app.get("/api/v1/healthcheck")
+async def check_health():
+    return "OK"
 
 
 if __name__ == "__main__":
