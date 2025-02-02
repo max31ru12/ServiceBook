@@ -1,4 +1,4 @@
-exclude: "^docs/|/versions/"
+exclude: "^docs/|/migrations/"
 default_stages: [commit]
 
 repos:
@@ -27,14 +27,10 @@ repos:
     rev: v2.0.1
     hooks:
     -   id: autoflake
+        args: [--remove-all-unused-imports, --in-place]
 
 -   repo: https://github.com/pycqa/flake8
     rev: 6.0.0
     hooks:
     -   id: flake8
         args: ["--select=PRNT001"]
-
--   repo: https://github.com/PyCQA/isort
-    rev: 5.12.0
-    hooks:
-    -   id: isort
