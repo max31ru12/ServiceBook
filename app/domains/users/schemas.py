@@ -9,12 +9,16 @@ class CreateUser(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class UserData(CreateUser):
+class UserData(BaseModel):
+    id: int
+    email: EmailStr
+    username: str
     first_name: str | None
     last_name: str | None
     is_admin: bool
     is_super_user: bool
-    id: int
+
+    model_config = {"from_attributes": True}
 
 
 class LoginForm(BaseModel):
