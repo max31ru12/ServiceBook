@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import ORJSONResponse
 
 from app.api.v1.auth import auth_router
+from app.api.v1.cars import cars_router
 from app.api.v1.users import users_router
 from app.core.config import DEV_MODE
 
@@ -24,6 +25,7 @@ app = FastAPI(
 
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(users_router, prefix="/api/v1")
+app.include_router(cars_router, prefix="/api/v1")
 
 # Разрешённые источники
 origins = [
