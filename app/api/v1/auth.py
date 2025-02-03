@@ -1,9 +1,13 @@
 from fastapi import APIRouter, HTTPException
 from starlette.responses import Response
 
-from app.core.auth import create_access_token, verify_password
+from app.core.auth import create_access_token, create_refresh_token, verify_password
 from app.core.responses import Responses
-from app.domains.users.dependencies import CurrentUserDep, UserServiceDep
+from app.domains.users.dependencies import (
+    CurrentUserDep,
+    RefreshTokenDep,
+    UserServiceDep,
+)
 from app.domains.users.schemas import (
     AccessToken,
     CreateUser,
@@ -60,16 +64,23 @@ async def login(
 
     if not verify_password(data.password, user.password):
         raise LoginResponses.INVALID_CREDENTIALS
-        # raise HTTPException(status_code=401, detail="Wrong credentials")
 
     access_token = create_access_token({"sub": user.username})
+    refresh_token = create_refresh_token({"sub": user.username})
+
     response.set_cookie(key="users_access_token", value=access_token, httponly=True)
-    return JWTTokenResponse(access_token=access_token, refresh_token=None)
+    response.set_cookie(key="users_refresh_token", value=refresh_token, httponly=True)
+
+    return JWTTokenResponse(access_token=access_token, refresh_token=refresh_token)
 
 
 @auth_router.post("/refresh", response_model=AccessToken)
-async def refresh_access_token() -> AccessToken:
-    return {"access_token": "access-token"}
+async def refresh_access_token(
+    response: Response, refresh_token: RefreshTokenDep
+) -> AccessToken:
+    access_token = create_access_token({"sub": refresh_token["sub"]})
+    response.set_cookie(key="users_access_token", value=access_token, httponly=True)
+    return AccessToken(access_token=access_token)
 
 
 @auth_router.post("/logout")

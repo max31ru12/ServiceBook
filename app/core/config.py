@@ -21,7 +21,7 @@ CONVENTION = {
 
 
 class Settings(BaseSettings):
-    ACCESS_TOKEN_LIFETIME_MINUTES: int = 15
+    ACCESS_TOKEN_LIFETIME_MINUTES: int = 1
     REFRESH_TOKEN_LIFETIME_DAYS: int = 30
 
     # DB settings
