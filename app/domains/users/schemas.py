@@ -26,6 +26,9 @@ class LoginForm(BaseModel):
     password: str = Field(min_length=5, max_length=50)
 
 
-class JWTTokenResponse(BaseModel):
+class AccessToken(BaseModel):
     access_token: str
+
+
+class JWTTokenResponse(AccessToken):
     refresh_token: str | None

@@ -21,7 +21,8 @@ CONVENTION = {
 
 
 class Settings(BaseSettings):
-    ACCESS_TOKEN_LIFETIME_DAYS: int = 30
+    ACCESS_TOKEN_LIFETIME_MINUTES: int = 15
+    REFRESH_TOKEN_LIFETIME_DAYS: int = 30
 
     # DB settings
     DB_HOST: str = "localhost"
