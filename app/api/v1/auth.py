@@ -74,7 +74,15 @@ async def login(
     return JWTTokenResponse(access_token=access_token, refresh_token=refresh_token)
 
 
-@auth_router.post("/refresh", response_model=AccessToken)
+class RefreshTokenResponses(Responses):
+    INVALID_TOKEN = 401, "Invalid token"
+
+
+@auth_router.post(
+    "/refresh",
+    response_model=AccessToken,
+    responses=RefreshTokenResponses.get_responses(),
+)
 async def refresh_access_token(
     response: Response, refresh_token: RefreshTokenDep
 ) -> AccessToken:

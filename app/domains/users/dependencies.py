@@ -1,4 +1,3 @@
-from datetime import datetime, timezone
 from typing import Annotated
 
 from fastapi import Depends, HTTPException
@@ -26,27 +25,20 @@ async def get_current_user(
         )
     except JWTError:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Токен не валидный!"
-        )
-
-    expire = payload.get("exp")
-    expire_time = datetime.fromtimestamp(int(expire), tz=timezone.utc)
-    if (not expire) or (expire_time < datetime.now(timezone.utc)):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Токен истек"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
         )
 
     username = payload.get("sub")
     if not username:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="Не найден ID пользователя"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invakid token"
         )
 
     user = await UserService(session).get_user_by_kwargs(username=username)
 
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found"
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token"
         )
 
     return user
