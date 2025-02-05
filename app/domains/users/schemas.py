@@ -28,6 +28,7 @@ class LoginForm(BaseModel):
 
 class AccessToken(BaseModel):
     access_token: str
+    type: str = "bearer"
 
 
 class JWTTokenResponse(AccessToken):

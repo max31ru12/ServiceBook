@@ -10,7 +10,7 @@ python = "^3.13"
 asyncpg = "^0.30.0"
 sqlalchemy = "^2.0.37"
 alembic = {extras = ["async"], version = "^1.14.1"}
-fastapi = "^0.115.7"
+fastapi = {extras = ["python-multipart"], version = "^0.115.8"}
 pydantic = {extras = ["email"], version = "^2.10.6"}
 python-jose = "^3.3.0"
 bcrypt = "4.0.1"
@@ -19,6 +19,7 @@ uvicorn = "^0.34.0"
 python-dotenv = "^1.0.1"
 pydantic-settings = "^2.7.1"
 orjson = "^3.10.15"
+python-multipart = "^0.0.20"
 
 
 [tool.poetry.group.dev.dependencies]

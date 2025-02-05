@@ -1,7 +1,7 @@
 from typing import Annotated
 
 from fastapi import Depends, HTTPException
-from fastapi.security import APIKeyCookie
+from fastapi.security import APIKeyCookie, OAuth2PasswordBearer
 from jose import JWTError, jwt
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
@@ -11,12 +11,14 @@ from app.core.setup_db import session_getter
 from app.domains.users.models import User
 from app.domains.users.service import UserService
 
-access_token_cookie = APIKeyCookie(name="users_access_token", auto_error=True)
+oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="api/v1/auth/login/swagger", scheme_name="Bearer"
+)
 refresh_token_cookie = APIKeyCookie(name="users_refresh_token", auto_error=True)
 
 
 async def get_current_user(
-    token: str = Depends(access_token_cookie),
+    token: str = Depends(oauth2_scheme),
     session: AsyncSession = Depends(session_getter),
 ) -> User:
     try:
