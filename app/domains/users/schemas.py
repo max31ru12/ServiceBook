@@ -3,16 +3,16 @@ from pydantic import BaseModel, EmailStr, Field
 
 class CreateUser(BaseModel):
 
-    username: str
-    password: str
+    username: str = Field(min_length=6)
+    password: str = Field(min_length=4)
 
     model_config = {"from_attributes": True}
 
 
 class UserData(BaseModel):
     id: int
-    email: EmailStr
-    username: str
+    email: EmailStr | None
+    username: str = Field(min_length=6)
     first_name: str | None
     last_name: str | None
     is_admin: bool
@@ -23,7 +23,7 @@ class UserData(BaseModel):
 
 class LoginForm(BaseModel):
     username: str
-    password: str = Field(min_length=5, max_length=50)
+    password: str
 
 
 class AccessToken(BaseModel):

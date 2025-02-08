@@ -46,7 +46,6 @@ async def register_user(
 
 class LoginResponses(Responses):
     INVALID_CREDENTIALS = 401, "Invalid username or password"
-    USER_NOT_FOUND = 404, "User not found"
 
 
 @auth_router.post(
@@ -60,10 +59,7 @@ async def login(
 
     user = await user_service.get_user_by_kwargs(username=data.username)
 
-    if user is None:
-        raise HTTPException(status_code=404, detail="There is no such user")
-
-    if not verify_password(data.password, user.password):
+    if user is None or not verify_password(data.password, user.password):
         raise LoginResponses.INVALID_CREDENTIALS
 
     access_token = create_access_token({"sub": user.username})
@@ -83,10 +79,7 @@ async def login_in_swagger(
 
     user = await user_service.get_user_by_kwargs(username=form_data.username)
 
-    if user is None:
-        raise HTTPException(status_code=404, detail="There is no such user")
-
-    if not verify_password(form_data.password, user.password):
+    if user is None or not verify_password(form_data.password, user.password):
         raise LoginResponses.INVALID_CREDENTIALS
 
     access_token = create_access_token({"sub": user.username})
