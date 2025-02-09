@@ -6,5 +6,5 @@ class BrandRepository(BaseAsyncSQLAlchemyRepository):
     model = Brand
 
 
-class CraRepository(BaseAsyncSQLAlchemyRepository):
+class CarRepository(BaseAsyncSQLAlchemyRepository):
     model = Car

@@ -10,6 +10,8 @@ class Brand(Base):
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column()
 
+    cars: Mapped[list["Car"]] = relationship(back_populates="brand")
+
 
 class Car(Base):
     __tablename__ = "car"

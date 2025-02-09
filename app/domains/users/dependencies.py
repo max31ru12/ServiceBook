@@ -9,7 +9,7 @@ from starlette import status
 from app.core.config import settings
 from app.core.setup_db import session_getter
 from app.domains.users.models import User
-from app.domains.users.service import UserService
+from app.domains.users.services import UserService
 
 oauth2_scheme = OAuth2PasswordBearer(
     tokenUrl="api/v1/auth/login/swagger", scheme_name="Bearer"
