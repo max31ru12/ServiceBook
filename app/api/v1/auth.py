@@ -108,5 +108,5 @@ async def refresh_access_token(
 
 @auth_router.post("/logout")
 async def logout(response: Response, user: CurrentUserDep) -> str:
-    response.delete_cookie("users_access_token")
+    response.delete_cookie("users_refresh_token")
     return "Successfully logged out"
