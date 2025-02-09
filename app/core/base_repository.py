@@ -37,7 +37,17 @@ class BaseAsyncSQLAlchemyRepository(ABC, Generic[ModelType]):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def list(self):
+    async def list(self, limit: int = None, offset: int = None):
+        if limit is not None and offset is not None:
+            return (
+                (
+                    await self.session.execute(
+                        select(self.model).limit(limit).offset(offset)
+                    )
+                )
+                .scalars()
+                .all()
+            )
         return (await self.session.execute(select(self.model))).scalars().all()
 
     async def create(self, **kwargs) -> ModelType:

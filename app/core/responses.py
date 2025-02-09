@@ -1,6 +1,7 @@
-from typing import Any
+from typing import Any, Generic, TypeVar
 
 from fastapi import HTTPException
+from pydantic import BaseModel
 
 
 class Responses:
@@ -18,3 +19,11 @@ class Responses:
                     cls, attr, HTTPException(status_code=status_code, detail=detail)
                 )
         return responses_dict or None
+
+
+DataModel = TypeVar("DataModel", bound=BaseModel)
+
+
+class PaginatedResponse(BaseModel, Generic[DataModel]):
+    count: int
+    data: list[DataModel]

@@ -10,6 +10,7 @@ from app.domains.cars.repositories import CarRepository
 
 class CarService:
     def __init__(self, session: AsyncSession = Depends(session_getter)):
+        self.session = session
         self.repository = CarRepository(session)
 
     async def get_car_by_id(self, user_id: int) -> Car:
@@ -18,5 +19,12 @@ class CarService:
     async def get_car_by_kwargs(self, **kwargs) -> Car:
         return await self.repository.get_first_by_kwargs(**kwargs)
 
-    async def get_all_cars(self) -> Sequence[Car]:
-        return await self.repository.list()
+    async def get_all_cars(
+        self, limit: int = None, offset: int = None
+    ) -> Sequence[Car]:
+        return await self.repository.list(limit, offset)
+
+    async def get_cars_joined_brand(
+        self, limit: int = None, offset: int = None
+    ) -> Sequence[Car]:
+        return await self.repository.get_cars_joined_brand()

@@ -8,11 +8,14 @@ class Brand(BaseModel):
     model_config = {"from_attributes": True}
 
 
-class Car(BaseModel):
+class CarData(BaseModel):
     id: int
     model: str
     year: int
     brand_id: int
-    brand: Brand
 
     model_config = {"from_attributes": True, "input_type": list}
+
+
+class CarAndBrandData(CarData):
+    brand: Brand

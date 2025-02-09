@@ -1,8 +1,10 @@
 from fastapi import APIRouter
 from fastapi.params import Path, Query
 
+from app.core.requests import PaginationParamsDep
+from app.core.responses import PaginatedResponse
 from app.domains.cars.dependencies import CarServiceDep
-from app.domains.cars.schemas import Car
+from app.domains.cars.schemas import CarData
 
 cars_router = APIRouter(prefix="/cars", tags=["cars"])
 
@@ -18,8 +20,15 @@ async def get_car(
 
 @cars_router.get(
     "/",
-    response_model=list[Car],
+    response_model=PaginatedResponse[CarData],
 )
-async def get_all_cars(service: CarServiceDep) -> list[Car]:
-    cars = await service.get_all_cars()
-    return [Car.from_orm(car) for car in cars]
+async def get_all_cars(
+    pagination: PaginationParamsDep, service: CarServiceDep
+) -> PaginatedResponse[CarData]:
+    limit = pagination.page_size
+    offset = limit * (pagination.page - 1)
+    cars = await service.get_all_cars(limit, offset)
+
+    car_list = [CarData.model_validate(car, from_attributes=True) for car in cars]
+
+    return PaginatedResponse(count=len(cars), data=car_list)
