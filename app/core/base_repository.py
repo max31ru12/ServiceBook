@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, Sequence, TypeVar
 
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -79,3 +79,8 @@ class BaseAsyncSQLAlchemyRepository(ABC, Generic[ModelType]):
             .scalars()
             .first()
         )
+
+    async def get_count(self):
+        return (
+            await self.session.execute(select(func.count()).select_from(self.model))
+        ).scalar()

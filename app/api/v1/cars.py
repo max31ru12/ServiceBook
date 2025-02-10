@@ -30,5 +30,6 @@ async def get_all_cars(
     cars = await service.get_all_cars(limit, offset)
 
     car_list = [CarData.model_validate(car, from_attributes=True) for car in cars]
+    cars_count = await service.get_cars_count()
 
-    return PaginatedResponse(count=len(cars), data=car_list)
+    return PaginatedResponse(count=cars_count, data=car_list)

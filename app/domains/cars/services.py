@@ -28,3 +28,6 @@ class CarService:
         self, limit: int = None, offset: int = None
     ) -> Sequence[Car]:
         return await self.repository.get_cars_joined_brand()
+
+    async def get_cars_count(self):
+        return await self.repository.get_count()
