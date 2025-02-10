@@ -20,9 +20,9 @@ class CarService:
         return await self.repository.get_first_by_kwargs(**kwargs)
 
     async def get_all_cars(
-        self, limit: int = None, offset: int = None
+        self, limit: int = None, offset: int = None, sort_by: str = None
     ) -> Sequence[Car]:
-        return await self.repository.list(limit, offset)
+        return await self.repository.list(limit, offset, sort_by)
 
     async def get_cars_joined_brand(
         self, limit: int = None, offset: int = None

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Generic, Sequence, TypeVar
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import delete, desc, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 
@@ -37,18 +37,26 @@ class BaseAsyncSQLAlchemyRepository(ABC, Generic[ModelType]):
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def list(self, limit: int = None, offset: int = None):
+    async def list(self, limit: int = None, offset: int = None, sort_by: str = None):
+
+        stmt = select(self.model)
+
         if limit is not None and offset is not None:
-            return (
-                (
-                    await self.session.execute(
-                        select(self.model).limit(limit).offset(offset)
-                    )
+            stmt = stmt.limit(limit).offset(offset)
+
+        if sort_by is not None:
+            if not hasattr(self.model, sort_by.strip("-")):
+                raise AttributeError(
+                    f"Model {self.model.__class__} don't have attribute {sort_by}"
                 )
-                .scalars()
-                .all()
+            sorter = (
+                desc(sort_by.strip("-"))
+                if sort_by.startswith("-")
+                else sort_by.strip("-")
             )
-        return (await self.session.execute(select(self.model))).scalars().all()
+            stmt = stmt.order_by(sorter)
+
+        return (await self.session.execute(stmt)).scalars().all()
 
     async def create(self, **kwargs) -> ModelType:
         instance = self.model(**kwargs)

@@ -17,3 +17,4 @@ def get_pagination_params(
 
 
 PaginationParamsDep = Annotated[PaginationParams, Depends(get_pagination_params)]
+OrderingDep = Annotated[str | None, Query(description="Параметр сортировки")]
