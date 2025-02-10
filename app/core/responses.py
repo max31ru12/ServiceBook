@@ -9,12 +9,19 @@ class Responses:
     def get_responses(cls) -> dict[int | str, dict[str, Any]] | None:
         responses_dict = {}
         for attr in dir(cls):
+
             if not attr.startswith("__") and not callable(getattr(cls, attr)):
                 status_code, detail = getattr(cls, attr)
-                responses_dict[status_code] = {
-                    "description": attr.replace("_", " "),
-                    "content": {"application/json": {"example": {"detail": detail}}},
-                }
+                if status_code not in responses_dict.keys():
+                    responses_dict[status_code] = {
+                        "description": attr.replace("_", " "),
+                        "content": {"application/json": {"examples": {}}},
+                    }
+
+                responses_dict[status_code]["content"]["application/json"]["examples"][
+                    attr.lower()
+                ] = {"summary": attr.replace("_", " "), "value": {"detail": detail}}
+
                 setattr(
                     cls, attr, HTTPException(status_code=status_code, detail=detail)
                 )
