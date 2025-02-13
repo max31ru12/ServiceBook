@@ -1,10 +1,10 @@
 from abc import ABC, abstractmethod
 from typing import Generic, Sequence, TypeVar
 
-from sqlalchemy import delete, func, select
+from sqlalchemy import delete, func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.utils.repository_utils import order_stmt, paginate_stmt
+from app.core.utils.repository_utils import paginate_stmt
 
 
 class BaseRepository(ABC):
@@ -47,11 +47,12 @@ class BaseAsyncSQLAlchemyRepository(ABC, Generic[ModelType]):
             stmt = paginate_stmt(stmt, limit, offset)
 
         if sort_by is not None:
-            if not hasattr(self.model, sort_by.strip("-")):
-                raise AttributeError(
-                    f"Model {self.model.__class__} don't have attribute {sort_by}"
-                )
-            stmt = order_stmt(stmt, sort_by)
+            for param in sort_by.split(","):
+                if not hasattr(self.model, param.strip("-")):
+                    raise AttributeError(
+                        f"Model {self.model.__class__} don't have attribute {param}"
+                    )
+            stmt = stmt.order_by(text(sort_by))
 
         return (await self.session.execute(stmt)).scalars().all()
 
