@@ -24,6 +24,7 @@ class UserData(BaseModel):
 class LoginForm(BaseModel):
     username: str
     password: str
+    remember_me: bool = False
 
 
 class AccessToken(BaseModel):

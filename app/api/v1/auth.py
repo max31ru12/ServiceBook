@@ -63,7 +63,9 @@ async def login(
         raise LoginResponses.INVALID_CREDENTIALS
 
     access_token = create_access_token({"sub": user.username})
-    refresh_token = create_refresh_token({"sub": user.username})
+    refresh_token = create_refresh_token(
+        {"sub": user.username}, remember_me=data.remember_me
+    )
 
     response.set_cookie(key="users_refresh_token", value=refresh_token, httponly=True)
 
