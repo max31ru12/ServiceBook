@@ -17,5 +17,5 @@ class CarData(BaseModel):
     model_config = {"from_attributes": True, "input_type": list}
 
 
-class CarAndBrandData(CarData):
+class CarWithBrandData(CarData):
     brand: Brand

@@ -24,10 +24,8 @@ class CarService:
     ) -> Sequence[Car]:
         return await self.repository.list(limit, offset, sort_by)
 
-    async def get_cars_joined_brand(
-        self, limit: int = None, offset: int = None
-    ) -> Sequence[Car]:
-        return await self.repository.get_cars_joined_brand()
-
-    async def get_cars_count(self):
+    async def get_cars_count(self) -> int:
         return await self.repository.get_count()
+
+    async def get_cars_joined_brand(self) -> Car:
+        return await self.repository.join(Car.brand)

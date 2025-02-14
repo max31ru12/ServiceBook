@@ -3,8 +3,7 @@ from typing import Generic, Sequence, TypeVar
 
 from sqlalchemy import delete, func, select, text
 from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.core.utils.repository_utils import paginate_stmt
+from sqlalchemy.orm import joinedload
 
 
 class BaseRepository(ABC):
@@ -44,7 +43,7 @@ class BaseAsyncSQLAlchemyRepository(ABC, Generic[ModelType]):
         stmt = select(self.model)
 
         if limit is not None and offset is not None:
-            stmt = paginate_stmt(stmt, limit, offset)
+            stmt = stmt.limit(limit).offset(offset)
 
         if sort_by is not None:
             for param in sort_by.split(","):
@@ -86,7 +85,11 @@ class BaseAsyncSQLAlchemyRepository(ABC, Generic[ModelType]):
             .first()
         )
 
-    async def get_count(self):
+    async def get_count(self) -> int:
         return (
             await self.session.execute(select(func.count()).select_from(self.model))
         ).scalar()
+
+    async def join(self, model_field) -> ModelType:
+        stmt = select(self.model).options(joinedload(model_field))
+        return (await self.session.execute(stmt)).scalars().all()
