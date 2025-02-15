@@ -1,3 +1,5 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.responses import Response
@@ -30,14 +32,9 @@ class RegisterResponses(Responses):
     status_code=201,
     responses=RegisterResponses.get_responses(),
 )
-async def register_user(
-    user_data: CreateUser, user_service: UserServiceDep
-) -> UserData:
-
+async def register_user(user_data: CreateUser, user_service: UserServiceDep) -> UserData:
     if (await user_service.get_user_by_kwargs(username=user_data.username)) is not None:
-        raise HTTPException(
-            status_code=409, detail="User with provided username is already exists"
-        )
+        raise HTTPException(status_code=409, detail="User with provided username is already exists")
 
     new_user = await user_service.create_user(user_data)
 
@@ -53,19 +50,14 @@ class LoginResponses(Responses):
     response_model=JWTTokenResponse,
     responses=LoginResponses.get_responses(),
 )
-async def login(
-    response: Response, data: LoginForm, user_service: UserServiceDep
-) -> JWTTokenResponse:
-
+async def login(response: Response, data: LoginForm, user_service: UserServiceDep) -> JWTTokenResponse:
     user = await user_service.get_user_by_kwargs(username=data.username)
 
     if user is None or not verify_password(data.password, user.password):
         raise LoginResponses.INVALID_CREDENTIALS
 
     access_token = create_access_token({"sub": user.username})
-    refresh_token = create_refresh_token(
-        {"sub": user.username}, remember_me=data.remember_me
-    )
+    refresh_token = create_refresh_token({"sub": user.username}, remember_me=data.remember_me)
 
     response.set_cookie(key="users_refresh_token", value=refresh_token, httponly=True)
 
@@ -74,11 +66,8 @@ async def login(
 
 @auth_router.post("/login/swagger")
 async def login_in_swagger(
-    response: Response,
-    user_service: UserServiceDep,
-    form_data: OAuth2PasswordRequestForm = Depends(),
+    response: Response, user_service: UserServiceDep, form_data: Annotated[OAuth2PasswordRequestForm, Depends()]
 ) -> JWTTokenResponse:
-
     user = await user_service.get_user_by_kwargs(username=form_data.username)
 
     if user is None or not verify_password(form_data.password, user.password):
@@ -101,9 +90,7 @@ class RefreshTokenResponses(Responses):
     response_model=AccessToken,
     responses=RefreshTokenResponses.get_responses(),
 )
-async def refresh_access_token(
-    response: Response, refresh_token: RefreshTokenDep
-) -> AccessToken:
+async def refresh_access_token(response: Response, refresh_token: RefreshTokenDep) -> AccessToken:
     access_token = create_access_token({"sub": refresh_token["sub"]})
     return AccessToken(access_token=access_token)
 

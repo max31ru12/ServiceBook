@@ -47,6 +47,7 @@ select = [
 ]
 ignore = [
     "E501", # PEP8 length > 79
+    "B904",
 ] # ignored rules
 
 [tool.ruff.format]
