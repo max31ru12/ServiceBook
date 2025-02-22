@@ -5,7 +5,7 @@ class Brand(BaseModel):
     id: int
     name: str
 
-    model_config = {"from_attributes": True}
+    model_config = {"from_attributes": True, "input_type": list}
 
 
 class CarData(BaseModel):

@@ -2,8 +2,8 @@ from typing import Sequence
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domains.cars.models import Car
-from app.domains.cars.repositories import CarRepository
+from app.domains.cars.models import Brand, Car
+from app.domains.cars.repositories import BrandRepository, CarRepository
 
 
 class CarService:
@@ -25,3 +25,15 @@ class CarService:
 
     async def get_cars_joined_brand(self) -> Car:
         return await self.repository.join(Car.brand)
+
+
+class BrandService:
+    def __init__(self, session: AsyncSession):
+        self.session = session
+        self.repository = BrandRepository(session)
+
+    async def get_all_brands(self, limit: int = None, offset: int = None, sort_by: str = None) -> Sequence[Brand]:
+        return await self.repository.list(limit, offset, sort_by)
+
+    async def get_brands_count(self) -> int:
+        return await self.repository.get_count()
