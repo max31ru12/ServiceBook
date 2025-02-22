@@ -32,6 +32,8 @@ class Settings(BaseSettings):
     DB_USER: str = "test"
     DB_NAME: str = "test"
 
+    APP_HOST: str = "127.0.0.1"  # Для локального запуска
+
     RESET_PASSWORD_TOKEN_SECRET: str = "reset_password_token"
     VERIFICATION_TOKEN_SECRET: str = "verification_token"
 
