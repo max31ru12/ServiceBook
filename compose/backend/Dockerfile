@@ -10,7 +10,7 @@ ENV PATH="/root/.local/bin:$PATH"
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /app
+WORKDIR /backend
 
 COPY pyproject.toml poetry.lock ./
 
@@ -19,6 +19,6 @@ RUN poetry install --no-root
 COPY ./alembic ./
 COPY alembic.ini ./
 
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--reload", "--log-level", "debug"]
+CMD ["poetry", "run", "python3", "app/main.py"]
 
 EXPOSE 8000

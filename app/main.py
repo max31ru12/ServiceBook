@@ -8,7 +8,7 @@ from fastapi.responses import ORJSONResponse
 from app.api.v1.auth import auth_router
 from app.api.v1.cars import cars_router
 from app.api.v1.users import users_router
-from app.core.config import DEV_MODE
+from app.core.config import DEV_MODE, settings
 
 
 @asynccontextmanager
@@ -46,7 +46,7 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": f"Hello World DEV_MODE: {DEV_MODE}"}
+    return {"message": f"Hello World DEV_MODE: {DEV_MODE} HOST: {settings.APP_HOST}"}
 
 
 @app.get("/api/v1/healthcheck")
@@ -55,4 +55,4 @@ async def check_health():
 
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host=settings.APP_HOST, port=8000, reload=True)

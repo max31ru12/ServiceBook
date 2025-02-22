@@ -28,18 +28,20 @@ services:
     depends_on:
       - postgres
     environment:
+      - APP_HOST=0.0.0.0
       - DB_HOST=postgres
       - DB_PORT=${DB_PORT:-5432}
       - DB_PASSWORD=${DB_PASSWORD:-test}
       - DB_USER=${DB_USER:-test}
       - DB_NAME=${DB_NAME:-test}
       - DEV_MODE=${DEV_MODE:-true}
+      - PYTHONPATH=/backend
     ports:
       - "8000:8000"
     restart: unless-stopped
     volumes:
-      - ./app/:/app/app/
-      - ./alembic/:/app/alembic
+      - ./app/:/backend/app/
+      - ./alembic/:/backend/alembic
     networks:
       - default
 
