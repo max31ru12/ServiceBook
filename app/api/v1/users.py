@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
 from app.core.requests import OrderingDep, PaginationParamsDep
-from app.core.responses import InvalidRequestParamsResponses, PaginatedResponse, Responses
 from app.core.utils.exceptions import InvalidSorterError
+from app.core.utils.responses import InvalidRequestParamsResponses, PaginatedResponse, Responses
 from app.domains.users.dependencies import CurrentUserDep, UserServiceDep
 from app.domains.users.schemas import UpdateUserData, UserData
 

@@ -1,6 +1,6 @@
 from typing import Any, Sequence
 
-from app.core.auth import get_password_hash
+from app.core.utils.auth import get_password_hash
 from app.domains.users.models import User
 from app.domains.users.schemas import CreateUser
 from app.domains.users.uow import UsersUnitOfWork

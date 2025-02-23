@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
 from app.core.requests import OrderingDep, PaginationParamsDep
-from app.core.responses import InvalidRequestParamsResponses, PaginatedResponse
 from app.core.utils.exceptions import InvalidSorterError
+from app.core.utils.responses import InvalidRequestParamsResponses, PaginatedResponse
 from app.domains.cars.dependencies import BrandServiceDep, CarServiceDep
 from app.domains.cars.schemas import Brand, CarData
 

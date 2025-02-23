@@ -4,8 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from starlette.responses import Response
 
-from app.core.auth import create_access_token, create_refresh_token, verify_password
-from app.core.responses import Responses
+from app.core.utils.auth import create_access_token, create_refresh_token, verify_password
+from app.core.utils.responses import Responses
 from app.domains.users.dependencies import (
     CurrentUserDep,
     RefreshTokenDep,
