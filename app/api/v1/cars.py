@@ -17,7 +17,7 @@ class CarListResponses(InvalidRequestParamsResponses):
     "/",
     status_code=200,
     response_model=PaginatedResponse[CarData],
-    responses=CarListResponses.get_responses(),
+    responses=InvalidRequestParamsResponses.get_responses(),
 )
 async def get_all_cars(
     pagination: PaginationParamsDep,
@@ -30,7 +30,7 @@ async def get_all_cars(
     try:
         cars = await service.get_all_cars(limit, offset, sort_by=ordering)
     except InvalidSorterError:
-        raise CarListResponses.INVALID_SORTER_FIELD
+        raise InvalidRequestParamsResponses.INVALID_SORTER_FIELD
 
     car_list = [CarData.model_validate(car, from_attributes=True) for car in cars]
     cars_count = await service.get_cars_count()
@@ -46,7 +46,7 @@ class BrandListResponses(InvalidRequestParamsResponses):
     "/brands",
     status_code=200,
     response_model=PaginatedResponse[Brand],
-    responses=BrandListResponses.get_responses(),
+    responses=InvalidRequestParamsResponses.get_responses(),
 )
 async def get_all_brands(
     pagination: PaginationParamsDep,
@@ -59,7 +59,7 @@ async def get_all_brands(
     try:
         brands = await service.get_all_brands(limit, offset, sort_by=ordering)
     except InvalidSorterError:
-        raise BrandListResponses.INVALID_SORTER_FIELD
+        raise InvalidRequestParamsResponses.INVALID_SORTER_FIELD
 
     brand_list = [Brand.model_validate(row, from_attributes=True) for row in brands]
     brands_count = await service.get_brands_count()
