@@ -5,6 +5,8 @@ from sqlalchemy import delete, func, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
+from app.core.utils.exceptions import InvalidSorterError
+
 
 class BaseRepository(ABC):
     @abstractmethod
@@ -46,7 +48,7 @@ class BaseAsyncSQLAlchemyRepository(ABC, Generic[ModelType]):
         if sort_by is not None:
             for param in sort_by.split(","):
                 if not hasattr(self.model, param.strip("-")):
-                    raise AttributeError(f"Model {self.model.__class__} don't have attribute {param}")
+                    raise InvalidSorterError(f"Model <{self.model.__name__}> don't have attribute <{param}>")
             stmt = stmt.order_by(text(sort_by))
 
         return (await self.session.execute(stmt)).scalars().all()

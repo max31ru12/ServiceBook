@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from app.core.requests import OrderingDep, PaginationParamsDep
 from app.core.responses import InvalidRequestParamsResponses, PaginatedResponse, Responses
+from app.core.utils.exceptions import InvalidSorterError
 from app.domains.users.dependencies import CurrentUserDep, UserServiceDep
 from app.domains.users.schemas import UpdateUserData, UserData
 
@@ -31,7 +32,7 @@ async def get_all_users(
 
     try:
         users = await user_service.get_all_users(limit, offset, sort_by=ordering)
-    except AttributeError:
+    except InvalidSorterError:
         raise UserListResponses.INVALID_SORTER_FIELD
 
     user_list = [UserData.model_validate(row, from_attributes=True) for row in users]

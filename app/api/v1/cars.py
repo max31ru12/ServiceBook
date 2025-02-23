@@ -2,6 +2,7 @@ from fastapi import APIRouter
 
 from app.core.requests import OrderingDep, PaginationParamsDep
 from app.core.responses import InvalidRequestParamsResponses, PaginatedResponse
+from app.core.utils.exceptions import InvalidSorterError
 from app.domains.cars.dependencies import BrandServiceDep, CarServiceDep
 from app.domains.cars.schemas import Brand, CarData
 
@@ -28,7 +29,7 @@ async def get_all_cars(
 
     try:
         cars = await service.get_all_cars(limit, offset, sort_by=ordering)
-    except AttributeError:
+    except InvalidSorterError:
         raise CarListResponses.INVALID_SORTER_FIELD
 
     car_list = [CarData.model_validate(car, from_attributes=True) for car in cars]
@@ -57,7 +58,7 @@ async def get_all_brands(
 
     try:
         brands = await service.get_all_brands(limit, offset, sort_by=ordering)
-    except AttributeError:
+    except InvalidSorterError:
         raise BrandListResponses.INVALID_SORTER_FIELD
 
     brand_list = [Brand.model_validate(row, from_attributes=True) for row in brands]
