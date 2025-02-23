@@ -11,7 +11,7 @@ class Responses:
     def get_responses(cls) -> dict[int | str, dict[str, Any]] | None:
         responses_dict = {}
         for attr in dir(cls):
-            if not attr.startswith("__") and not callable(getattr(cls, attr)) and attr != "__original_attrs":
+            if not attr.startswith("__") and not callable(getattr(cls, attr)) and not attr.startswith("_"):
                 try:
                     status_code, detail = getattr(cls, attr)
                     cls.__original_attrs[attr] = status_code, detail
