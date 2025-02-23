@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Generic, Sequence, TypeVar
+from typing import Any, Generic, Sequence, TypeVar
 
-from sqlalchemy import delete, func, select, text
+from sqlalchemy import delete, func, select, text, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
@@ -56,8 +56,13 @@ class BaseAsyncSQLAlchemyRepository(ABC, Generic[ModelType]):
         self.session.add(instance)
         return instance
 
-    async def remove(self, model_id: int):
-        return await self.session.execute(delete(self.model).where(self.model.id == model_id))
+    async def update(self, row_id: int, update_data: dict[str | Any]):
+        return await self.session.execute(
+            update(self.model).where(self.model.id == row_id).values(**update_data).returning(self.model.id)
+        )
+
+    async def remove(self, row_id: int):
+        return await self.session.execute(delete(self.model).where(self.model.id == row_id).returning(self.model.id))
 
     async def get_by_id(self, model_id: int) -> ModelType:
         return (await self.session.execute(select(self.model).filter_by(id=model_id))).scalar_one_or_none()

@@ -6,7 +6,6 @@ from jose import JWTError, jwt
 from starlette import status
 
 from app.core.config import settings
-from app.core.setup_db import AsyncSessionDep
 from app.domains.users.models import User
 from app.domains.users.services import UserService
 
@@ -15,7 +14,6 @@ refresh_token_cookie = APIKeyCookie(name="refresh_token", auto_error=True)
 
 
 async def get_current_user(
-    session: AsyncSessionDep,
     token: str = Depends(oauth2_scheme),
 ) -> User:
     try:
@@ -27,7 +25,7 @@ async def get_current_user(
     if not username:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
-    user = await UserService(session).get_user_by_kwargs(username=username)
+    user = await UserService().get_user_by_kwargs(username=username)
 
     if not user:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
@@ -43,8 +41,8 @@ def verify_refresh_token(refresh_token: Annotated[str, Depends(refresh_token_coo
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Refresh token is invalid")
 
 
-def get_user_service(session: AsyncSessionDep) -> UserService:
-    return UserService(session)
+def get_user_service() -> UserService:
+    return UserService()
 
 
 RefreshTokenDep = Annotated[str, Depends(verify_refresh_token)]

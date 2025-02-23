@@ -1,16 +1,15 @@
 from fastapi import APIRouter
 
 from app.core.requests import OrderingDep, PaginationParamsDep
-from app.core.responses import PaginatedResponse, Responses
+from app.core.responses import InvalidRequestParamsResponses, PaginatedResponse
 from app.domains.cars.dependencies import BrandServiceDep, CarServiceDep
 from app.domains.cars.schemas import Brand, CarData
 
 cars_router = APIRouter(prefix="/cars", tags=["cars"])
 
 
-class CarListResponses(Responses):
-    INVALID_FILTER_FIELD = 400, "Invalid filter field"
-    INVALID_SORTER_FIELD = 400, "Invalid sorter field"
+class CarListResponses(InvalidRequestParamsResponses):
+    pass
 
 
 @cars_router.get(
@@ -38,9 +37,8 @@ async def get_all_cars(
     return PaginatedResponse(count=cars_count, data=car_list)
 
 
-class BrandListResponses(Responses):
-    INVALID_FILTER_FIELD = 400, "Invalid filter field"
-    INVALID_SORTER_FIELD = 400, "Invalid sorter field"
+class BrandListResponses(InvalidRequestParamsResponses):
+    pass
 
 
 @cars_router.get(
