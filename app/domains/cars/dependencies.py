@@ -7,11 +7,11 @@ from app.domains.cars.services import BrandService, CarService
 
 
 def get_car_service(session: AsyncSessionDep) -> CarService:
-    return CarService(session)
+    return CarService()
 
 
 def get_brand_service(session: AsyncSessionDep) -> BrandService:
-    return BrandService(session)
+    return BrandService()
 
 
 CarServiceDep = Annotated[CarService, Depends(get_car_service)]
